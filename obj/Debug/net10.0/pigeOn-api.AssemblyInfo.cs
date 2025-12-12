@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("pigeOn-api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+44658d8242a23dbe29b20100a93c9db078034b93")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e7b200ad6fc7a83a43474ec36a4864ee58e82ac2")]
 [assembly: System.Reflection.AssemblyProductAttribute("pigeOn-api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("pigeOn-api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

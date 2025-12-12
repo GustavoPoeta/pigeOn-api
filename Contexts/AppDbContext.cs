@@ -9,17 +9,23 @@ namespace pigeon_api.Contexts
             : base(options)
         {
         }
-        
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>()
                 .ToTable("users");
+            modelBuilder.Entity<Friendship>()
+                .ToTable("friendships");
+            modelBuilder.Entity<Premium>()
+                .ToTable("premium");
 
             base.OnModelCreating(modelBuilder);
         }
 
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Friendship> Friendships { get; set; }
+        public DbSet<Premium> Premium { get; set; }
     }
 
 }
