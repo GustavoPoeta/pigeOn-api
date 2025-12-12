@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("pigeOn-api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b6270a7e0d87aed1ae12d8304ad246abf27168ea")]
 [assembly: System.Reflection.AssemblyProductAttribute("pigeOn-api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("pigeOn-api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
