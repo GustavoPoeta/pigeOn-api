@@ -31,10 +31,10 @@ public class ErrorHandlerMiddleware
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             context.Response.ContentType = "application/json";
 
-            var response = new ErrorResponse (context.Response.StatusCode, "An unexpected error has ocurred");
-            
+            var response = new ErrorResponse(context.Response.StatusCode, "An unexpected error has ocurred");
+
             await context.Response.WriteAsJsonAsync(response);
         }
     }
- 
+
 }

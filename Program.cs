@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using pigeon_api.Contexts;
+using pigeon_api.Middlewares;
 
 namespace pigeon_api
 {
@@ -11,6 +12,11 @@ namespace pigeon_api
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            if (builder.Environment.IsDevelopment())
+            {
+                builder.Configuration.AddUserSecrets<Program>();
+            }
 
             builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -31,6 +37,7 @@ namespace pigeon_api
 
             app.UseHttpsRedirection();
 
+            app.UseMiddleware<AuthenticationMiddleware>();
             app.UseMiddleware<ErrorHandlerMiddleware>();
 
             app.MapControllers();
