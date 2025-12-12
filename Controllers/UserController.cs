@@ -21,10 +21,7 @@ namespace pigeon_api.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetUser(int id)
         {
-            var user = await service.Get(id);
-
-            if (user == null)
-                return NotFound();
+            var user = await service.Get(id) ?? throw new NotFoundException("User not found");;
 
             return Ok(user);
         }

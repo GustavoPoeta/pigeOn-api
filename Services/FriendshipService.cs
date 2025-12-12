@@ -51,10 +51,10 @@ namespace pigeon_api.Services
 
             if (!isUserPremium)
             {
-                throw new Exception("Only premium users can update save method settings");
+                throw new UnauthorizedException("Only premium users can update save method settings");
             }
 
-            var existingFriendship = await GetFriendship(friendship.Id) ?? throw new Exception("Friendship not found");
+            var existingFriendship = await GetFriendship(friendship.Id) ?? throw new NotFoundException("Friendship not found");
             existingFriendship.SaveOnCache = friendship.SaveOnCache;
             _context.Friendships.Update(existingFriendship);
             await _context.SaveChangesAsync();
@@ -68,7 +68,7 @@ namespace pigeon_api.Services
 
             if (friendship.Count == 0)
             {
-                throw new Exception("Friendship not found");
+                throw new NotFoundException("Friendship not found");
             }
 
             foreach (var f in friendship)

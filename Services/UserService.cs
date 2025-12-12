@@ -54,7 +54,7 @@ public class UserService(AppDbContext context)
             await _context.SaveChangesAsync();
         } else
         {
-            throw new Exception("User not found");
+            throw new NotFoundException("User not found");
         }
     }
 }

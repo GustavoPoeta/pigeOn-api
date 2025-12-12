@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using pigeon_api.Contexts;
 using pigeon_api.Dtos;
+using pigeon_api.Models;
 using pigeon_api.Services;
 
 namespace pigeon_api.Controllers
@@ -28,9 +29,8 @@ namespace pigeon_api.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetFriendship(int id)
         {
-            var friendship = await service.GetFriendship(id);
-            if (friendship == null)
-                return NotFound();
+            var friendship = await service.GetFriendship(id) ?? throw new NotFoundException("Friendship not found");;
+
             return Ok(friendship);
         }
 

@@ -19,22 +19,39 @@ public class ErrorHandlerMiddleware
     {
         try
         {
-            // Continue the pipeline
             await _next(context);
+        }
+        catch (ApiException ex)
+        {
+            _logger.LogWarning(ex, "Handled API exception");
+
+            context.Response.StatusCode = ex.StatusCode;
+            context.Response.ContentType = "application/json";
+
+            var response = new ErrorResponse(
+                ex.StatusCode,
+                ex.Message
+            );
+
+            await context.Response.WriteAsJsonAsync(response);
         }
         catch (Exception ex)
         {
-            // Log the error
-            _logger.LogError(ex, "Unhandled exception occurred");
+            _logger.LogError(ex, "Unhandled exception");
 
-            // Prepare the response
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             context.Response.ContentType = "application/json";
 
-            var response = new ErrorResponse(context.Response.StatusCode, "An unexpected error has ocurred");
+            var response = new ErrorResponse(
+                StatusCodes.Status500InternalServerError,
+                _env.IsDevelopment()
+                    ? ex.Message
+                    : "An unexpected error occurred"
+            );
 
             await context.Response.WriteAsJsonAsync(response);
         }
     }
+
 
 }
