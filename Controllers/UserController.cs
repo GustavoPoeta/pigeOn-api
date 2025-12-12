@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using pigeon_api.Contexts;
+using pigeon_api.Dtos;
 using pigeon_api.Models;
 
 namespace pigeon_api.Controllers
@@ -33,6 +34,27 @@ namespace pigeon_api.Controllers
         {
             var users = await service.GetAll();
             return Ok(users);
+        }
+
+        [HttpPost("create")]
+        public async Task<IActionResult> Create ([FromBody] UserDto user) 
+        {
+            await service.Create(user);
+            return Created();
+        }
+
+        [HttpPut("update")]
+        public async Task<IActionResult> Update ([FromBody] UserDto user) 
+        {
+            await service.Update(user);
+            return Ok();
+        }
+
+        [HttpDelete("delete/{id:int}")]
+        public async Task<IActionResult> Delete (int id)
+        {
+            await service.Delete(id);
+            return Ok();
         }
     }
 }
