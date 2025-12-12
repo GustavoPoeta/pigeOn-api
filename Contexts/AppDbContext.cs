@@ -9,6 +9,15 @@ namespace pigeon_api.Contexts
             : base(options)
         {
         }
+        
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<User>()
+                .ToTable("users");
+
+            base.OnModelCreating(modelBuilder);
+        }
+
 
         public DbSet<User> Users { get; set; }
     }

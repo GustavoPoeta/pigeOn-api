@@ -1,8 +1,6 @@
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
 using pigeon_api.Contexts;
 using pigeon_api.Models;
-using RouteAttribute = Microsoft.AspNetCore.Components.RouteAttribute;
 
 namespace pigeon_api.Controllers
 {
@@ -19,17 +17,21 @@ namespace pigeon_api.Controllers
             service = new(_context);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetUser(int? id) 
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetUser(int id)
         {
-           User user = await service.Get(id);
-           return Ok(user);
+            var user = await service.Get(id);
+
+            if (user == null)
+                return NotFound();
+
+            return Ok(user);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll ()
+        public async Task<IActionResult> GetAll()
         {
-            List<User> users = await service.GetAll();
+            var users = await service.GetAll();
             return Ok(users);
         }
     }
