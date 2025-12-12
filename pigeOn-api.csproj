@@ -7,6 +7,7 @@
     <UseTopLevelStatements>false</UseTopLevelStatements>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>pigeOn_api</RootNamespace>
+    <UserSecretsId>pigeon-api-12345</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

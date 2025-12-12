@@ -1,5 +1,8 @@
-public class ErrorResponse (int statusCode, string message)
+namespace pigeon_api.Models
 {
-    public int StatusCode  { get; set; } = statusCode;
-    public string Message { get; set; } = message;
+    public class ErrorResponse(int statusCode, string message)
+    {
+        public int StatusCode { get; set; } = statusCode;
+        public string Message { get; set; } = message;
+    }
 }

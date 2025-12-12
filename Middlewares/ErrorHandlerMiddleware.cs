@@ -1,3 +1,5 @@
+using pigeon_api.Models;
+
 public class ErrorHandlerMiddleware
 {
     private readonly RequestDelegate _next;
