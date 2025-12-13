@@ -7,6 +7,9 @@ using pigeon_api.Middlewares;
 using pigeon_api.Services;
 using pigeon_api.Messaging.Nats;
 using pigeon_api.Messaging.Consumers;
+using pigeon_api.SignalR.Hubs;
+using Microsoft.AspNetCore.SignalR;
+using pigeon_api.SignalR;
 
 namespace pigeon_api
 {
@@ -35,6 +38,9 @@ namespace pigeon_api
             // NATS CONSUMERS (BACKGROUND WORKERS)
             builder.Services.AddHostedService<FriendshipCreatedConsumer>();
 
+            builder.Services.AddSignalR();
+            builder.Services.AddSingleton<IUserIdProvider, UserIdProvider>();
+
             // APPLICATION SERVICES
             builder.Services.AddScoped<FriendshipService>();
 
@@ -42,6 +48,21 @@ namespace pigeon_api
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("SignalRCors", policy =>
+                {
+                    policy
+                        .WithOrigins(
+                            "http://127.0.0.1:5500",
+                            "http://localhost:5500"
+                        )
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                });
+            });
 
             var app = builder.Build();
 
@@ -53,10 +74,16 @@ namespace pigeon_api
 
             app.UseHttpsRedirection();
 
-            app.UseMiddleware<AuthenticationMiddleware>();
+            app.UseCors("SignalRCors");
+
+            app.UseMiddleware<UserAuthMiddleware>();
+            app.UseMiddleware<ApiKeyAuthMiddleware>();
             app.UseMiddleware<ErrorHandlerMiddleware>();
 
             app.MapControllers();
+
+            app.MapHub<NotificationsHub>("/hubs/notifications");
+
             app.Run();
         }
     }
