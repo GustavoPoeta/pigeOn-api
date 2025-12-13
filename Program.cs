@@ -4,6 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using pigeon_api.Contexts;
 using pigeon_api.Middlewares;
+using pigeon_api.Services;
+using pigeon_api.Messaging.Nats;
+using pigeon_api.Messaging.Consumers;
 
 namespace pigeon_api
 {
@@ -18,17 +21,30 @@ namespace pigeon_api
                 builder.Configuration.AddUserSecrets<Program>();
             }
 
+            // DATABASE
             builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+                options.UseNpgsql(
+                    builder.Configuration.GetConnectionString("DefaultConnection")
+                )
+            );
 
-            // Add services
+            // NATS (INFRASTRUCTURE)
+            builder.Services.AddSingleton<NatsConnection>();
+            builder.Services.AddSingleton<NatsPublisher>();
+
+            // NATS CONSUMERS (BACKGROUND WORKERS)
+            builder.Services.AddHostedService<FriendshipCreatedConsumer>();
+
+            // APPLICATION SERVICES
+            builder.Services.AddScoped<FriendshipService>();
+
+            // FRAMEWORK
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 
-            // Middleware
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();

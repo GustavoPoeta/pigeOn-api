@@ -2,12 +2,20 @@ using pigeon_api.Contexts;
 using Microsoft.EntityFrameworkCore;
 using pigeon_api.Models;
 using pigeon_api.Dtos;
+using pigeon_api.Messaging.Nats;
 
 namespace pigeon_api.Services
 {
-    public class FriendshipService(AppDbContext context)
+    public class FriendshipService
     {
-        private readonly AppDbContext _context = context;
+        private readonly AppDbContext _context;
+        private readonly NatsPublisher _publisher;
+
+        public FriendshipService(AppDbContext context, NatsPublisher publisher)
+        {
+            _context = context;
+            _publisher = publisher;
+        }
 
         public async Task<List<Friendship>> GetUserFriendships(int userId)
         {
@@ -37,11 +45,22 @@ namespace pigeon_api.Services
             {
                 UserId = friendship.UserId,
                 FriendId = friendship.FriendId,
-                CreatedAt = friendship.CreatedAt
+                CreatedAt = DateTime.UtcNow,
             };
 
             _context.Friendships.Add(newFriendship);
             await _context.SaveChangesAsync();
+
+            _publisher.Publish(
+                Subjects.FriendshipCreated,
+                new
+                {
+                    newFriendship.Id,
+                    newFriendship.UserId,
+                    newFriendship.FriendId,
+                    newFriendship.CreatedAt
+                }
+            );
         }
 
         public async Task Update(FriendshipDto friendship)
