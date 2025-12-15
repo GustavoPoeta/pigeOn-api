@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using NATS.Client.Service;
 using pigeon_api.Contexts;
 using pigeon_api.Dtos;
 using pigeon_api.Models;
@@ -9,19 +10,17 @@ namespace pigeon_api.Controllers
     [Route("api/users")]
     public class UserController : ControllerBase
     {
-        private readonly AppDbContext _context;
-        private readonly UserService service;
+        private readonly UserService _service;
 
-        public UserController(AppDbContext context)
+        public UserController(UserService service)
         {
-            _context = context;
-            service = new(_context);
+            _service = service;
         }
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetUser(int id)
         {
-            var user = await service.Get(id) ?? throw new NotFoundException("User not found");;
+            var user = await _service.Get(id) ?? throw new NotFoundException("User not found");;
 
             return Ok(user);
         }
@@ -29,28 +28,28 @@ namespace pigeon_api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var users = await service.GetAll();
+            var users = await _service.GetAll();
             return Ok(users);
         }
 
         [HttpPost("create")]
         public async Task<IActionResult> Create ([FromBody] UserDto user) 
         {
-            await service.Create(user);
+            await _service.Create(user);
             return Created();
         }
 
         [HttpPut("update")]
         public async Task<IActionResult> Update ([FromBody] UserDto user) 
         {
-            await service.Update(user);
+            await _service.Update(user);
             return Ok();
         }
 
         [HttpDelete("delete/{id:int}")]
         public async Task<IActionResult> Delete (int id)
         {
-            await service.Delete(id);
+            await _service.Delete(id);
             return Ok();
         }
     }

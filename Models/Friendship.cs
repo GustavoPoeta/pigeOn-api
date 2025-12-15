@@ -19,9 +19,11 @@ namespace pigeon_api.Models
         public int Id { get; set; }
 
         [Column("user_id")]
+        [Required]
         public int UserId { get; set; }
 
         [Column("friend_id")]
+        [Required]
         public int FriendId { get; set; }
 
         [Column("saveoncache")]

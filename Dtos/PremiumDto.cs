@@ -1,13 +1,12 @@
-namespace pigeon_api.Dtos
-{
-    public class PremiumDto
-    {
-        public PremiumDto() {}
+namespace pigeon_api.Dtos;
 
-        public int Id { get; set; }
-        public int UserId { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime LastRenovationAt { get; set; }
-        public DateTime ExpiryDate { get; set; }
-    }
+public sealed class PremiumDto
+{
+    public PremiumDto() { }
+
+    public int Id { get; set; }
+    public int UserId { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime LastRenovationAt { get; set; }
+    public DateTime ExpiryDate { get; set; }
 }

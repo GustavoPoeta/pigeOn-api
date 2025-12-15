@@ -11,12 +11,15 @@ namespace pigeon_api.Models
         [Column("id")]
         public int Id { get; set; }
         [Column("user_id")]
+        [Required]
         public int UserId { get; set; }
         [Column("created_at")]
         public DateTime CreatedAt { get; set; }
         [Column("last_renovation_at")]
+        [Required]
         public DateTime LastRenovationAt { get; set; }
         [Column("expiry_date")]
+        [Required]
         public DateTime ExpiryDate { get; set; }
 
         [ForeignKey(nameof(UserId))]

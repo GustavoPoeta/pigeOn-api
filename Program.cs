@@ -42,7 +42,9 @@ namespace pigeon_api
             builder.Services.AddSingleton<IUserIdProvider, UserIdProvider>();
 
             // APPLICATION SERVICES
+            builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<FriendshipService>();
+            builder.Services.AddScoped<MessageService>();
 
             // FRAMEWORK
             builder.Services.AddControllers();
