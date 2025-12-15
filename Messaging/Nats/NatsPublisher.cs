@@ -28,20 +28,42 @@ public sealed class NatsPublisher
     }
 
     // Domain-specific publish 
-    public void PublishFriendshipCreated(
+    public void PublishFriendshipRequested(
         int UserId,
         int FriendId,
+        Boolean SaveOnCache,
         DateTime CreatedAt
         )
     {
         var evt = new FriendshipCreatedEvent(
             UserId,
             FriendId,
+            SaveOnCache,
             CreatedAt
         );
 
         Publish(
-            Subjects.FriendshipCreated,
+            Subjects.FriendshipRequested,
+            evt
+        );
+    }
+
+    public void PublishFriendshipAccepted(
+        int UserId,
+        int  FriendId,
+        Boolean SaveOnCache,
+        DateTime CreatedAt
+    )
+    {
+        var evt = new FriendshipCreatedEvent(
+            UserId,
+            FriendId,
+            SaveOnCache,
+            CreatedAt
+        );
+
+        Publish(
+            Subjects.FriendshipAccepted,
             evt
         );
     }

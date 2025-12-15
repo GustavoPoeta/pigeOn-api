@@ -11,15 +11,15 @@ using pigeon_api.Messaging.Contracts;
 
 namespace pigeon_api.Messaging.Consumers;
 
-public sealed class FriendshipCreatedConsumer : BackgroundService
+public sealed class FriendshipRequestedConsumer : BackgroundService
 {
     private readonly IJetStream _js;
-    private readonly ILogger<FriendshipCreatedConsumer> _logger;
+    private readonly ILogger<FriendshipRequestedConsumer> _logger;
     private readonly IHubContext<NotificationsHub> _hubContext;
 
-    public FriendshipCreatedConsumer(
+    public FriendshipRequestedConsumer(
         NatsConnection connection,
-        ILogger<FriendshipCreatedConsumer> logger,
+        ILogger<FriendshipRequestedConsumer> logger,
         IHubContext<NotificationsHub> hubContext)
     {
         _js = connection.Connection.CreateJetStreamContext();
@@ -29,10 +29,6 @@ public sealed class FriendshipCreatedConsumer : BackgroundService
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation(
-            "Starting FriendshipCreatedConsumer. Subject={Subject}",
-            Subjects.FriendshipCreated
-        );
 
         var consumerConfig = ConsumerConfiguration.Builder()
             .WithDurable("friendship-consumer")
@@ -44,18 +40,12 @@ public sealed class FriendshipCreatedConsumer : BackgroundService
             .Build();
 
         _js.PushSubscribeAsync(
-            Subjects.FriendshipCreated,
+            Subjects.FriendshipRequested,
             async (sender, args) =>
             {
                 try
                 {
                     var json = Encoding.UTF8.GetString(args.Message.Data);
-
-                    _logger.LogInformation(
-                        "FriendshipCreated event received. StreamSeq={StreamSeq} Payload={Payload}",
-                        args.Message.MetaData?.StreamSequence,
-                        json
-                    );
 
                     var evt = JsonSerializer.Deserialize<FriendshipCreatedEvent>(json);
 
@@ -99,7 +89,7 @@ public sealed class FriendshipCreatedConsumer : BackgroundService
 
 
         _logger.LogInformation(
-            "FriendshipCreatedConsumer subscribed successfully."
+            "FriendshipRequestedConsumer subscribed successfully."
         );
 
         return Task.CompletedTask;

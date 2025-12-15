@@ -39,7 +39,7 @@ namespace pigeon_api.Services
             return friendship1 != null && friendship2 != null;
         }
 
-        public async Task Create(FriendshipDto friendship)
+        public async Task RequestFriendship(FriendshipDto friendship)
         {
             var newFriendship = new Friendship
             {
@@ -52,7 +52,31 @@ namespace pigeon_api.Services
             await _context.SaveChangesAsync();
 
             _publisher.Publish(
-                Subjects.FriendshipCreated,
+                Subjects.FriendshipRequested,
+                new
+                {
+                    newFriendship.Id,
+                    newFriendship.UserId,
+                    newFriendship.FriendId,
+                    newFriendship.CreatedAt
+                }
+            );
+        }
+
+        public async Task AcceptFriendship(FriendshipDto friendship)
+        {
+            var newFriendship = new Friendship
+            {
+                UserId = friendship.UserId,
+                FriendId = friendship.FriendId,
+                CreatedAt = DateTime.UtcNow,
+            };
+
+            _context.Friendships.Add(newFriendship);
+            await _context.SaveChangesAsync();
+
+            _publisher.Publish(
+                Subjects.FriendshipAccepted,
                 new
                 {
                     newFriendship.Id,

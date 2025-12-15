@@ -39,11 +39,18 @@ public class FriendshipController : ControllerBase
         return Ok(isMutual);
     }
 
-    [HttpPost("create")]
-    public async Task<IActionResult> Create([FromBody] FriendshipDto friendship)
+    [HttpPost("request")]
+    public async Task<IActionResult> RequestFriendship([FromBody] FriendshipDto friendship)
     {
-        await _service.Create(friendship);
-        return Created(string.Empty, null);
+        await _service.RequestFriendship(friendship);
+        return Created();
+    }
+
+    [HttpPost("accept")]
+    public async Task<IActionResult> AcceptFriendship([FromBody] FriendshipDto friendship)
+    {
+        await _service.AcceptFriendship(friendship);
+        return Created();
     }
 
     [HttpPut("update")]
