@@ -20,8 +20,13 @@ namespace pigeon_api.Contexts
                 .ToTable("premium");
             modelBuilder.Entity<Message>()
                 .ToTable("messages");
-            modelBuilder.Entity<Notification>()
-                .ToTable("notifications");
+            modelBuilder.Entity<Notification>(entity =>
+            {
+                entity.ToTable("notifications");
+                entity.Property(e => e.Type)
+                    .HasConversion<string>()
+                    .HasColumnName("type");
+            });
 
             base.OnModelCreating(modelBuilder);
         }
