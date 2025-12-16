@@ -26,7 +26,8 @@ public class NotificationService
                 Content = n.Content,
                 IsRead = n.IsRead,
                 CreatedAt = n.CreatedAt,
-                ReadAt = n.ReadAt
+                ReadAt = n.ReadAt,
+                FromUserId = n.FromUserId
             })
             .ToListAsync();
 
@@ -47,7 +48,8 @@ public class NotificationService
             Content = notificationDto.Content,
             IsRead = notificationDto.IsRead,
             CreatedAt = notificationDto.CreatedAt,
-            ReadAt = notificationDto.ReadAt
+            ReadAt = notificationDto.ReadAt,
+            FromUserId = notificationDto.FromUserId
         };
         await _context.Notifications.AddAsync(newNotification);
         await _context.SaveChangesAsync();

@@ -41,6 +41,13 @@ namespace pigeon_api.Services
 
         public async Task RequestFriendship(FriendshipDto friendship)
         {
+            var alreadyFriendsOrNot = await _context.Friendships.FirstOrDefaultAsync(f => f.UserId == friendship.UserId && f.FriendId == friendship.FriendId);
+
+            if (alreadyFriendsOrNot != null)
+            {
+                throw new ConflictException("Friendship already exists");
+            }
+
             var newFriendship = new Friendship
             {
                 UserId = friendship.UserId,
@@ -73,6 +80,14 @@ namespace pigeon_api.Services
             };
 
             _context.Friendships.Add(newFriendship);
+
+            var notification = await _context.Notifications.FirstOrDefaultAsync(n => n.UserId == friendship.UserId && n.FromUserId == friendship.FriendId);
+
+            if (notification != null)
+            {
+                _context.Notifications.Remove(notification);
+            }
+
             await _context.SaveChangesAsync();
 
             _publisher.Publish(

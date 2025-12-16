@@ -29,4 +29,10 @@ namespace pigeon_api.Models
             : base(message, StatusCodes.Status400BadRequest) { }
     }
 
+    public class ConflictException : ApiException
+    {
+        public ConflictException(string message)
+            : base(message, StatusCodes.Status409Conflict) {}
+    }
+
 }

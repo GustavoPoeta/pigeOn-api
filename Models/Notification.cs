@@ -26,7 +26,11 @@ public sealed class Notification
     public DateTime CreatedAt { get; set; }
     [Column("read_at")]
     public DateTime? ReadAt { get; set; }
+    [Column("from_user_id")]
+    public int? FromUserId { get; set; }
 
     [ForeignKey(nameof(UserId))]
     public User? User { get; set; }
+    [ForeignKey(nameof(FromUserId))]
+    public User? FromUser { get; set; }
 }

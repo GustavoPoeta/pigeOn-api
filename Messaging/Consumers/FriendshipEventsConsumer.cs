@@ -14,16 +14,19 @@ public sealed class FriendshipEventsConsumer : BackgroundService
     private readonly IJetStream _js;
     private readonly ILogger<FriendshipEventsConsumer> _logger;
     private readonly IHubContext<NotificationsHub> _hubContext;
+    private readonly IServiceScopeFactory _serviceProvider;
     private IJetStreamPushAsyncSubscription _subscription;
 
     public FriendshipEventsConsumer(
         NatsConnection connection,
         ILogger<FriendshipEventsConsumer> logger,
-        IHubContext<NotificationsHub> hubContext)
+        IHubContext<NotificationsHub> hubContext,
+        IServiceScopeFactory serviceProvider)
     {
         _js = connection.Connection.CreateJetStreamContext();
         _logger = logger;
         _hubContext = hubContext;
+        _serviceProvider = serviceProvider;
     }
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -55,7 +58,7 @@ public sealed class FriendshipEventsConsumer : BackgroundService
                         {
                             case Subjects.FriendshipRequested:
                                 var requestedEvent = JsonSerializer.Deserialize<FriendshipCreatedEvent>(json);
-                                await FriendshipHandlers.FriendshipRequestedHandler(args, _hubContext, requestedEvent);
+                                await FriendshipHandlers.FriendshipRequestedHandler(args, _hubContext, requestedEvent, _serviceProvider);
                                 break;
 
                             case Subjects.FriendshipAccepted:

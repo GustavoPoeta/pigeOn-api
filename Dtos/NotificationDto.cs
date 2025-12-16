@@ -20,4 +20,5 @@ public sealed class NotificationDto
     public bool IsRead { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? ReadAt { get; set; }
+    public int? FromUserId { get; set; }
 }
