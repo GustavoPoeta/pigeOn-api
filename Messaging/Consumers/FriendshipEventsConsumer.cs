@@ -12,22 +12,19 @@ namespace pigeon_api.Messaging.Consumers;
 public sealed class FriendshipEventsConsumer : BackgroundService
 {
     private readonly IJetStream _js;
-    private readonly ILogger _logger;
-    private IJetStreamPushAsyncSubscription _subscription;
+    private readonly ILogger<FriendshipEventsConsumer> _logger;
     private readonly IHubContext<NotificationsHub> _hubContext;
+    private IJetStreamPushAsyncSubscription _subscription;
 
     public FriendshipEventsConsumer(
         NatsConnection connection,
-        ILogger logger,
-        IJetStreamPushAsyncSubscription subscription,
+        ILogger<FriendshipEventsConsumer> logger,
         IHubContext<NotificationsHub> hubContext)
     {
         _js = connection.Connection.CreateJetStreamContext();
         _logger = logger;
-        _subscription = subscription;
         _hubContext = hubContext;
     }
-
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -68,6 +65,7 @@ public sealed class FriendshipEventsConsumer : BackgroundService
                         }
 
                         args.Message.Ack();
+                        break; // Exit retry loop on success
                     }
                     catch (Exception ex)
                     {
@@ -88,13 +86,20 @@ public sealed class FriendshipEventsConsumer : BackgroundService
             options
         );
 
+        _logger.LogInformation("FriendshipEventsConsumer started successfully");
         return Task.CompletedTask;
     }
 
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
-        _subscription?.Unsubscribe();
-        _subscription?.Dispose();
+        _logger.LogInformation("Stopping FriendshipEventsConsumer...");
+        
+        if (_subscription != null)
+        {
+            _subscription.Unsubscribe();
+            _subscription.Dispose();
+        }
+        
         await base.StopAsync(cancellationToken);
     }
 }

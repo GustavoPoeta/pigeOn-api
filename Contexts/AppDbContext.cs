@@ -20,6 +20,8 @@ namespace pigeon_api.Contexts
                 .ToTable("premium");
             modelBuilder.Entity<Message>()
                 .ToTable("messages");
+            modelBuilder.Entity<Notification>()
+                .ToTable("notifications");
 
             base.OnModelCreating(modelBuilder);
         }
@@ -29,6 +31,7 @@ namespace pigeon_api.Contexts
         public DbSet<Friendship> Friendships { get; set; }
         public DbSet<Premium> Premium { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
     }
 
 }

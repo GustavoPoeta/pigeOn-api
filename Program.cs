@@ -44,6 +44,7 @@ namespace pigeon_api
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<FriendshipService>();
             builder.Services.AddScoped<MessageService>();
+            builder.Services.AddScoped<NotificationService>();
 
             // FRAMEWORK
             builder.Services.AddControllers();
@@ -56,8 +57,8 @@ namespace pigeon_api
                 {
                     policy
                         .WithOrigins(
-                            "http://127.0.0.1:5500",
-                            "http://localhost:5500"
+                            "http://127.0.0.1:5501",
+                            "http://localhost:5501"
                         )
                         .AllowAnyHeader()
                         .AllowAnyMethod()
