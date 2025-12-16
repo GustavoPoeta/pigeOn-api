@@ -14,22 +14,24 @@ public sealed class NatsConnection : IDisposable
 
         Connection = new ConnectionFactory().CreateConnection(opts);
 
-        EnsureStreams();
+        var jsm = Connection.CreateJetStreamManagementContext();
+
+        EnsureStreams(jsm, "FRIENDSHIPS", "friendship.*");
+        EnsureStreams(jsm, "MESSAGES", "message.*");
     }
 
-    private void EnsureStreams()
+    private void EnsureStreams(IJetStreamManagement jsm, string name, string subject)
     {
-        var jsm = Connection.CreateJetStreamManagementContext();
 
         try
         {
-            jsm.GetStreamInfo("FRIENDSHIPS");
+            jsm.GetStreamInfo(name);
         }
         catch (NATSJetStreamException)
         {
             jsm.AddStream(StreamConfiguration.Builder()
-                .WithName("FRIENDSHIPS")
-                .WithSubjects("friendship.*")
+                .WithName(name)
+                .WithSubjects(subject)
                 .WithStorageType(StorageType.File)
                 .Build());
         }

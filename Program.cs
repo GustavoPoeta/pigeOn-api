@@ -37,6 +37,7 @@ namespace pigeon_api
 
             // NATS CONSUMERS (BACKGROUND WORKERS)
             builder.Services.AddHostedService<FriendshipEventsConsumer>();
+            builder.Services.AddHostedService<MessageEventsConsumer>();
             builder.Services.AddSignalR();
             builder.Services.AddSingleton<IUserIdProvider, UserIdProvider>();
 

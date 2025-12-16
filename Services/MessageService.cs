@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using pigeon_api.Contexts;
 using pigeon_api.Dtos;
+using pigeon_api.Messaging.Nats;
 using pigeon_api.Models;
 
 namespace pigeon_api.Services;
@@ -8,10 +9,12 @@ namespace pigeon_api.Services;
 public class MessageService
 {
     private readonly AppDbContext _context;
+    private readonly NatsPublisher _publisher;
 
-    public MessageService(AppDbContext context)
+    public MessageService(AppDbContext context, NatsPublisher publisher)
     {
         _context = context;
+        _publisher = publisher;
     }
 
     public async Task<List<MessageDto>> GetUserMessages(int userId)
@@ -78,6 +81,17 @@ public class MessageService
 
         _context.Messages.Add(newMessage);
         await _context.SaveChangesAsync();
+
+        _publisher.Publish(
+            Subjects.MessageCreated,
+            new
+            {
+                newMessage.SenderId,
+                newMessage.ReceiverId,
+                newMessage.Content,
+                newMessage.CreatedAt
+            }
+        );
     }
 
     public async Task MarkMessageAsViewed(int messageId)

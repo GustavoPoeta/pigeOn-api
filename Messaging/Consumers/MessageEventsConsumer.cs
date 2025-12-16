@@ -2,24 +2,24 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.SignalR;
 using NATS.Client.JetStream;
+using pigeon_api.Messaging.ConsumerHandlers;
 using pigeon_api.Messaging.Contracts;
 using pigeon_api.Messaging.Nats;
 using pigeon_api.SignalR.Hubs;
-using pigeon_api.Messaging.ConsumerHandlers;
 
 namespace pigeon_api.Messaging.Consumers;
 
-public sealed class FriendshipEventsConsumer : BackgroundService
+public sealed class MessageEventsConsumer : BackgroundService
 {
     private readonly IJetStream _js;
-    private readonly ILogger<FriendshipEventsConsumer> _logger;
+    private readonly ILogger<MessageEventsConsumer> _logger;
     private readonly IHubContext<NotificationsHub> _hubContext;
     private readonly IServiceScopeFactory _serviceProvider;
     private IJetStreamPushAsyncSubscription? _subscription;
 
-    public FriendshipEventsConsumer(
+    public MessageEventsConsumer(
         NatsConnection connection,
-        ILogger<FriendshipEventsConsumer> logger,
+        ILogger<MessageEventsConsumer> logger,
         IHubContext<NotificationsHub> hubContext,
         IServiceScopeFactory serviceProvider)
     {
@@ -32,7 +32,7 @@ public sealed class FriendshipEventsConsumer : BackgroundService
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
         var consumerConfig = ConsumerConfiguration.Builder()
-            .WithDurable("friendship-events-consumer")
+            .WithDurable("message-events-consumer")
             .WithAckPolicy(AckPolicy.Explicit)
             .Build();
 
@@ -41,7 +41,7 @@ public sealed class FriendshipEventsConsumer : BackgroundService
             .Build();
 
         _subscription = _js.PushSubscribeAsync(
-            "friendship.*",
+            "message.*",
             async (sender, args) =>
             {
                 var maxRetries = 3;
@@ -56,19 +56,15 @@ public sealed class FriendshipEventsConsumer : BackgroundService
                         // Route based on subject
                         switch (args.Message.Subject)
                         {
-                            case Subjects.FriendshipRequested:
-                                var requestedEvent = JsonSerializer.Deserialize<FriendshipCreatedEvent>(json);
-                                await FriendshipHandlers.FriendshipRequestedHandler(args, _hubContext, requestedEvent, _serviceProvider);
+                            case Subjects.MessageCreated:
+                                var createdEvent = JsonSerializer.Deserialize<MessageCreatedEvent>(json);
+                                await MessageHandlers.MessageCreatedHandler(args, _hubContext, createdEvent, _serviceProvider);
                                 break;
 
-                            case Subjects.FriendshipAccepted:
-                                var acceptedEvent = JsonSerializer.Deserialize<FriendshipCreatedEvent>(json);
-                                await FriendshipHandlers.FriendshipAcceptedHandler(args, _hubContext, acceptedEvent);
-                                break;
                         }
 
                         args.Message.Ack();
-                        break; // Exit retry loop on success
+                        break;
                     }
                     catch (Exception ex)
                     {
@@ -86,23 +82,23 @@ public sealed class FriendshipEventsConsumer : BackgroundService
                 }
             },
             autoAck: false,
-            options
+            options            
         );
 
-        _logger.LogInformation("FriendshipEventsConsumer started successfully");
         return Task.CompletedTask;
     }
 
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Stopping FriendshipEventsConsumer...");
-        
+        _logger.LogInformation("Stopping MessageEventsConsumer...");
+
         if (_subscription != null)
         {
             _subscription.Unsubscribe();
             _subscription.Dispose();
         }
-        
+
         await base.StopAsync(cancellationToken);
     }
+
 }

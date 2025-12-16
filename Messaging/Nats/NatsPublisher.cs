@@ -67,4 +67,24 @@ public sealed class NatsPublisher
             evt
         );
     }
+
+    public void PublishMessageCreated(
+        int SenderId,
+        int ReceiverId,
+        string Content,
+        DateTime CreatedAt
+    )
+    {
+        var evt = new MessageCreatedEvent(
+            SenderId,
+            ReceiverId,
+            Content,
+            CreatedAt
+        );
+
+        Publish(
+            Subjects.MessageCreated,
+            evt
+        );
+    }
 }

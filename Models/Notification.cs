@@ -21,13 +21,13 @@ public sealed class Notification
     [Column("content")]
     public string Content { get; set; } = String.Empty;
     [Column("is_read")]
-    public bool IsRead { get; set; }
+    public bool IsRead { get; set; } = false;
     [Column("created_at")]
-    public DateTime CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     [Column("read_at")]
-    public DateTime? ReadAt { get; set; }
+    public DateTime? ReadAt { get; set; } = null;
     [Column("from_user_id")]
-    public int? FromUserId { get; set; }
+    public int? FromUserId { get; set; } = null;
 
     [ForeignKey(nameof(UserId))]
     public User? User { get; set; }

@@ -19,8 +19,8 @@ public sealed class MessageDto
     public int SenderId { get; set; }
     public int ReceiverId { get; set; }
     public string Content { get; set; }
-    public Boolean Edited { get; set; }
-    public Boolean Deleted { get; set; }
+    public Boolean Edited { get; set; } = false;
+    public Boolean Deleted { get; set; } = false;
     public DateTime CreatedAt { get; set; } 
     public DateTime? ViewedAt { get; set; }
 }

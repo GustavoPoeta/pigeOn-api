@@ -4,4 +4,5 @@ public enum NotificationTypes
 {
     FriendshipRequest,
     FriendshipAccepted,
+    MessageCreated
 }

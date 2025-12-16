@@ -33,5 +33,14 @@ namespace pigeon_api.SignalR.Hubs
                message = $"{userAcceptedId} has accepted to be your friend."
             });
         }
+
+        public async Task NotifyMessageCreated(string targetUserId, string senderId)
+        {
+            await Clients.User(targetUserId).SendAsync("MessageCreated", new
+            {
+                senderId,
+                message = $"{senderId} has sent you a message."
+            });
+        }
     }
 }
