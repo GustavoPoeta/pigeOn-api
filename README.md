@@ -1,10 +1,6 @@
 <h1>🕊️ PigeOn — Real-Time Friendship and Messaging System</h1>
 
 <p>
-<img src="https://i.ibb.co/WWNcb28p/Untitled-design.png" alt="PigeOn logo" width="400"/>
-</p>
-
-<p>
 PigeOn is a practical back-end application demonstrating how to build <b>friendship and messaging systems</b> with <b>real-time notifications</b> using:
 </p>
 
