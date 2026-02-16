@@ -1,11 +1,5 @@
 # PigeOn - Friendship and message systems
 
-![GitHub repo size](https://img.shields.io/github/repo-size/iuricode/README-template?style=for-the-badge)
-![GitHub language count](https://img.shields.io/github/languages/count/iuricode/README-template?style=for-the-badge)
-![GitHub forks](https://img.shields.io/github/forks/iuricode/README-template?style=for-the-badge)
-![Bitbucket open issues](https://img.shields.io/bitbucket/issues/iuricode/README-template?style=for-the-badge)
-![Bitbucket open pull requests](https://img.shields.io/bitbucket/pr-raw/iuricode/README-template?style=for-the-badge)
-
 <img src="https://i.ibb.co/WWNcb28p/Untitled-design.png" alt="PigeOn logo" border="0">
 
 > PigeOn is an example and practical application of real-time messaging and friendship systems using Asp.Net Core, SignalR and NATS 
