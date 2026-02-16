@@ -1,7 +1,7 @@
 <h1>🕊️ PigeOn — Real-Time Friendship and Messaging System</h1>
 
 <p>
-<img src="https://i.ibb.co/WWNcb28p/Untitled-design.png" alt="PigeOn logo" width="200"/>
+<img src="https://i.ibb.co/WWNcb28p/Untitled-design.png" alt="PigeOn logo" width="400"/>
 </p>
 
 <p>
