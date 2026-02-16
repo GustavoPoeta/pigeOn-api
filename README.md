@@ -1,30 +1,86 @@
-# PigeOn - Friendship and message systems
+<h2>⚡ Real-Time Notifications (SignalR)</h2>
 
-<img src="https://i.ibb.co/WWNcb28p/Untitled-design.png" alt="PigeOn logo" border="0">
+<p><b>SignalR Hub:</b></p>
+<pre><code>http://localhost:5216/hubs/notifications</code></pre>
 
-> PigeOn is an example and practical application of real-time messaging and friendship systems using Asp.Net Core, SignalR and NATS 
+<p><b>Events emitted:</b></p>
+<table>
+  <thead>
+    <tr>
+      <th>Event</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>FriendshipRequested</code></td>
+      <td>Sent when a friendship request is created</td>
+    </tr>
+    <tr>
+      <td><code>FriendshipAccepted</code></td>
+      <td>Sent when a friendship request is accepted</td>
+    </tr>
+    <tr>
+      <td><code>MessageCreated</code></td>
+      <td>Sent when a message is created</td>
+    </tr>
+  </tbody>
+</table>
 
-## 💻 Requirements
+<hr/>
 
-Dependencies you must have before running it:
+<h2>🧪 Minimal SignalR Test Client (Node.js)</h2>
 
-- .NET 10
-- NATS CLI and SERVER
-- Git
+<p>Create a file named <code>client.js</code> and paste this code.</p>
 
-## 🚀 Setup
+<h3>1) Install dependency</h3>
+<pre><code>npm install @microsoft/signalr</code></pre>
 
-The installation is simple and straightfoward: 
-- Run this command in your terminal:
-    <strong>git@github.com:GustavoPoeta/pigeOn-api.git</strong>
-    
-- Having NATS CLI and SERVER installed: run in your terminal: nats-server -js
+<h3>2) client.js</h3>
+<pre><code>const signalR = require("@microsoft/signalr");
 
-## ☕ Using PigeOn
+const HUB_URL = process.env.HUB_URL ?? "http://localhost:5216/hubs/notifications";
 
-This project is back-end only, so if you intend to use and test it there is two options:
-- Make requests with CURL.
-- Use postman, insomnia, or any HTTP request tool you prefer.
+const connection = new signalR.HubConnectionBuilder()
+  .withUrl(HUB_URL)
+  .withAutomaticReconnect()
+  .configureLogging(signalR.LogLevel.Information)
+  .build();
 
-## 📝 Licença
-The project is a mere practical example, so you are free to do whatever you want with it. 😉
+connection.on("FriendshipRequested", (payload) =&gt; {
+  console.log("FriendshipRequested:", payload);
+});
+
+connection.on("FriendshipAccepted", (payload) =&gt; {
+  console.log("FriendshipAccepted:", payload);
+});
+
+connection.on("MessageCreated", (payload) =&gt; {
+  console.log("MessageCreated:", payload);
+});
+
+async function start() {
+  try {
+    await connection.start();
+    console.log("✅ Connected to SignalR:", HUB_URL);
+  } catch (err) {
+    console.error("❌ Failed to connect:", err);
+    setTimeout(start, 3000);
+  }
+}
+
+start();</code></pre>
+
+<h3>3) Run</h3>
+<pre><code># optional
+export HUB_URL="http://localhost:5216/hubs/notifications"
+
+node client.js</code></pre>
+
+<p>
+  Now perform REST actions (friendship request/accept, message create) and watch the events appear in your terminal.
+</p>
+
+<blockquote>
+  <b>Note:</b> If your Hub routes messages using <code>Clients.User(...)</code>, make sure your app is configuring the user identity correctly; otherwise the connection works but user-targeted events may not be delivered.
+</blockquote>
